@@ -1,0 +1,31 @@
+version: "3.1"
+services:
+    webserver:
+        image: hitalos/laravel:latest
+        ports:
+            - 80:80
+        volumes:
+            - ./:/var/www/
+            - ./docker/php.ini:/usr/local/etc/php/conf.d/php.ini
+        links:
+            - db
+    db:
+        image: postgres
+        restart: always
+        environment:
+          POSTGRES_DB: bookworm
+          POSTGRES_USER: bookworm
+          POSTGRES_PASSWORD: bookworm
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+          - 8080:8080
+    mailcatcher:
+        image: schickling/mailcatcher
+        working_dir: /application
+        ports:
+          - "1025:1025"
+          - "1080:1080"
+    
