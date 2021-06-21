@@ -2,18 +2,18 @@
 
 namespace App\Models;
 
-use App\Models\Discount;
+use App\Models\Book;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Book extends Model
+class Discount extends Model
 {
     use HasFactory;
 
-    protected $table = 'books';
+    protected $table = 'discounts';
 
-    public function discount()
+    public function book()
     {
-        return $this->hasOne(Discount::class);
+        return $this->belongsTo(Book::class);
     }
 }
