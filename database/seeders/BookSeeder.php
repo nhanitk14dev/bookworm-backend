@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Product;
+use App\Models\Book;
 use Illuminate\Database\Seeder;
 
-class ProductSeeder extends Seeder
+class BookSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,12 +14,12 @@ class ProductSeeder extends Seeder
      */
     public function run()
     {
-        $this->createDataProducts();
+        $this->createDataBooks();
     }
 
-    public function createDataProducts()
+    public function createDataBooks()
     {
-        $products = array(
+        $books = array(
             [
                 'category_id'      => 1,
                 'author_id'        => 1,
@@ -121,8 +121,8 @@ class ProductSeeder extends Seeder
             ],
         );
 
-        foreach ($products as $product) {
-            $product = Product::firstOrCreate($product);
+        foreach ($books as $book) {
+            $book = Book::firstOrCreate($book);
         }
     }
 }
