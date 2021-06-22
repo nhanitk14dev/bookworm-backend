@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 // Route definition...
 Route::get('/books', [BookController::class, 'index']);
 Route::get('/discount-books', [BookController::class, 'getDiscountBooks']);
+Route::get('/recommended-books', [BookController::class, 'getRecommendedBooks']);
+Route::get('/popular-books', [BookController::class, 'getPopularBooks']);
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

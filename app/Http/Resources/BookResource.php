@@ -23,7 +23,7 @@ class BookResource extends JsonResource
             'slug'             => $this->slug,
             'book_summary'     => $this->book_summary,
             'book_price'       => $this->book_price,
-            'book_cover_photo' => env('APP_URL') . '/products/' . $this->book_cover_photo,
+            'book_cover_photo' => $this->book_cover_photo,
             'discount'         => new DiscountResource($this->discount),
         ];
     }

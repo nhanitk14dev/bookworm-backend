@@ -39,4 +39,34 @@ class BookController extends Controller
             'totals'         => count($data),
         ]);
     }
+
+    public function getRecommendedBooks()
+    {
+        $recommended_books = Book::with('discount')
+            ->withAvg('reviews', 'rating_star')
+            ->orderBy('reviews_avg_rating_star', 'desc')
+            ->orderBy('book_price', 'asc')
+            ->take(8)
+            ->get();
+
+        return response()->json([
+            'popular_books' => $recommended_books->toArray(),
+            'totals'        => count($recommended_books),
+        ]);
+    }
+
+    public function getPopularBooks()
+    {
+        $popular_books = Book::with('discount')
+            ->withCount('reviews')
+            ->orderBy('reviews_count', 'desc')
+            ->orderBy('book_price', 'asc')
+            ->take(8)
+            ->get();
+
+        return response()->json([
+            'popular_books' => $popular_books->toArray(),
+            'totals'        => count($popular_books),
+        ]);
+    }
 }
