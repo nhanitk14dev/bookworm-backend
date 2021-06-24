@@ -9,6 +9,21 @@ class Book extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'category_id',
+        'author_id',
+        'book_title',
+        'slug',
+        'book_summary',
+        'book_price',
+        'book_cover_photo',
+    ];
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function discount()
     {
         return $this->hasOne(Discount::class);
@@ -21,6 +36,6 @@ class Book extends Model
 
     public function getBookCoverPhotoAttribute($value)
     {
-        return 'products/' . $value;
+        return '/products/' . $value;
     }
 }

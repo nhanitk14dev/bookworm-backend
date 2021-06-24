@@ -16,15 +16,29 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::all();
-        return response()->json([
+        $books = Book::with('discount')->get();
+        return response([
             'products' => BookResource::collection($books),
-        ]);
+            'code'     => RESPONSE_CODES['request_success'],
+        ], 200);
     }
 
-    public function show($id)
+    public function show($slug)
     {
-        //
+        $book = Book::where('slug', $slug)->first();
+
+        if ($book) {
+            $result = [
+                'book' => new BookResource($book),
+                'code' => RESPONSE_CODES['request_success'],
+            ];
+        } else {
+            $result = [
+                'code'    => RESPONSE_CODES['item_not_found'],
+                'message' => 'Item not found',
+            ];
+        }
+        return response($result, 200);
     }
 
     public function getDiscountBooks()
@@ -34,10 +48,11 @@ class BookController extends Controller
         })->take(10)->get();
 
         $data = count($discount_books) ? BookResource::collection($discount_books) : array();
-        return response()->json([
+        return response([
             'discount_books' => $data,
             'totals'         => count($data),
-        ]);
+            'code'           => RESPONSE_CODES['request_success'],
+        ], 200);
     }
 
     public function getRecommendedBooks()
@@ -49,10 +64,11 @@ class BookController extends Controller
             ->take(8)
             ->get();
 
-        return response()->json([
-            'popular_books' => $recommended_books->toArray(),
-            'totals'        => count($recommended_books),
-        ]);
+        return response([
+            'recommended_books' => $recommended_books->toArray(),
+            'totals'            => count($recommended_books),
+            'code'              => RESPONSE_CODES['request_success'],
+        ], 200);
     }
 
     public function getPopularBooks()
@@ -64,9 +80,10 @@ class BookController extends Controller
             ->take(8)
             ->get();
 
-        return response()->json([
+        return response([
             'popular_books' => $popular_books->toArray(),
             'totals'        => count($popular_books),
-        ]);
+            'code'          => RESPONSE_CODES['request_success'],
+        ], 200);
     }
 }

@@ -12,6 +12,14 @@ class Review extends Model
 
     public $timestamps = false;
 
+    protected $fillable = [
+        'book_id',
+        'review_title',
+        'review_detail',
+        'review_date',
+        'rating_star',
+    ];
+
     public function book()
     {
         return $this->belongsTo(Book::class);
