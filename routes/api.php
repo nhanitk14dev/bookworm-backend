@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 // Route definition...
 Route::get('/books', [BookController::class, 'index']);
-Route::get('/books/{slug}', [BookController::class, 'show']);
+Route::get('/book/{slug}', [BookController::class, 'show']);
 Route::get('/discount-books', [BookController::class, 'getDiscountBooks']);
 Route::get('/recommended-books', [BookController::class, 'getRecommendedBooks']);
 Route::get('/popular-books', [BookController::class, 'getPopularBooks']);

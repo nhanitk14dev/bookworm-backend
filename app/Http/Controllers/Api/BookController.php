@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
@@ -14,12 +15,23 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::with('discount')->get();
+        $books     = Book::with('discount')->paginate(8);
+        $meta_data = array();
+        if (count($books)) {
+            $meta_data = [
+                'total'       => $books->total(),
+                'perPage'     => $books->perPage(),
+                'currentPage' => $books->currentPage(),
+                'lastPage'    => $books->lastPage(),
+            ];
+        }
+
         return response([
-            'products' => BookResource::collection($books),
-            'code'     => RESPONSE_CODES['request_success'],
+            'products'  => BookResource::collection($books),
+            'meta_data' => $meta_data,
+            'code'      => RESPONSE_CODES['request_success'],
         ], 200);
     }
 
