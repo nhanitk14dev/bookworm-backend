@@ -13,6 +13,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        // Use class Factory
+        // \App\Models\User::factory(3)->create();
+        \App\Models\Author::factory(3)->create();
+        \App\Models\Category::factory(3)->create();
+
+        // Run all to import data default
+        $this->call([
+            BookSeeder::class,
+            BookV2Seeder::class,
+            ReviewSeeder::class,
+            ReviewSeederV2::class,
+            DiscountsSeeder::class,
+        ]);
     }
 }
