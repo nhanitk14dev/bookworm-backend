@@ -7,6 +7,7 @@ use App\Http\Resources\BookResource;
 use App\Models\Book;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
@@ -17,21 +18,58 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
-        $books     = Book::with('discount')->paginate(8);
-        $meta_data = array();
-        if (count($books)) {
-            $meta_data = [
-                'total'       => $books->total(),
-                'perPage'     => $books->perPage(),
-                'currentPage' => $books->currentPage(),
-                'lastPage'    => $books->lastPage(),
-            ];
+        $query = Book::leftJoin('reviews as rv', 'books.id', '=', 'rv.book_id')
+            ->leftJoin('authors as au', 'books.author_id', 'au.id')
+            ->join('discounts as d', 'd.book_id', '=', 'books.id');
+
+        $books = $query->select(
+            'books.id',
+            'books.book_title',
+            'books.slug',
+            'books.book_cover_photo',
+            'books.book_price as book_price',
+            'd.discount_end_date',
+            'd.discount_price',
+            DB::raw('count(rv.book_id) as count_reviews'),
+            DB::raw('book_price - d.discount_price as sub_price')
+        )->groupBy(
+            'books.id',
+            'sub_price',
+            'discount_end_date',
+            'discount_price'
+        );
+
+        $sort = $request->query('sortByKey');
+        if (empty($sort) || $sort == 'sale') {
+            /**
+             * Default order by sale, the most discount price.
+             * Price display: The discount price have an expired date. It is only available
+             * when the current date is before its expired date or its expired date is null.
+             * If a book has an available discount price, display it as a final price and put the book price
+             * in front of it like the mock-up. Otherwise, only display the book price.
+             */
+            $books->whereDate('d.discount_end_date', '>', date('Y-m-d'))->orderBy('sub_price', 'asc');
+        } else {
+            switch ($sort) {
+                case 'highPrice':
+                    $books->orderByDesc('sub_price');
+                    break;
+                case 'lowPrice':
+                    $books->orderBy('sub_price', 'asc');
+                    break;
+                default:
+                    // Sort by popular
+                    $books->orderByDesc('count_reviews')->orderBy('sub_price', 'asc');
+                    break;
+            }
         }
 
+        $per_page = $request->query('perPage');
+        $result   = empty($per_page) ? $books->paginate(8) : $books->paginate((int) $per_page);
+
         return response([
-            'products'  => BookResource::collection($books),
-            'meta_data' => $meta_data,
-            'code'      => RESPONSE_CODES['request_success'],
+            'books' => $result,
+            'code'  => RESPONSE_CODES['request_success'],
         ], 200);
     }
 
