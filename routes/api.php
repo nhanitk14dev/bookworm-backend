@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\BookController;
+use App\Http\Controllers\Api\CategoryController;
 use Illuminate\Http\Request;
 
 /*
@@ -21,6 +23,8 @@ Route::get('/book/{slug}', [BookController::class, 'show']);
 Route::get('/discount-books', [BookController::class, 'getDiscountBooks']);
 Route::get('/recommended-books', [BookController::class, 'getRecommendedBooks']);
 Route::get('/popular-books', [BookController::class, 'getPopularBooks']);
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/authors', [AuthorController::class, 'index']);
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
