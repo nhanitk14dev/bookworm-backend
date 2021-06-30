@@ -24,19 +24,21 @@ class BookController extends Controller
 
         $books = $query->select(
             'books.id',
+            'books.category_id',
             'books.book_title',
             'books.slug',
             'books.book_cover_photo',
             'books.book_price as book_price',
             'd.discount_end_date',
-            'd.discount_price',
+            'd.discount_price as discount_price',
             DB::raw('count(rv.book_id) as count_reviews'),
-            DB::raw('book_price - d.discount_price as sub_price')
+            DB::raw('book_price - discount_price as sub_price'),
+            DB::raw('avg(rv.rating_star) as avg_rating_star')
         )->groupBy(
             'books.id',
             'sub_price',
             'discount_end_date',
-            'discount_price'
+            'discount_price',
         );
 
         $sort = $request->query('sortByKey');
@@ -62,6 +64,22 @@ class BookController extends Controller
                     $books->orderByDesc('count_reviews')->orderBy('sub_price', 'asc');
                     break;
             }
+        }
+
+        $filter_category = $request->query('fCategory');
+        if (!empty($filter_category) && $filter_category != 'all') {
+            $books->where('category_id', $filter_category);
+        }
+
+        $filter_author = $request->query('fAuthor');
+        if (!empty($filter_author) && $filter_author != 'all') {
+            $books->where('author_id', $filter_author);
+        }
+
+        $filter_rating = $request->query('fRating');
+        if (!empty($filter_rating) && $filter_rating != 'all') {
+            // https://laravel.com/docs/8.x/queries#raw-methods
+            $books->havingRaw('avg(rv.rating_star) > ?', [$filter_rating]);
         }
 
         $per_page = $request->query('perPage');
