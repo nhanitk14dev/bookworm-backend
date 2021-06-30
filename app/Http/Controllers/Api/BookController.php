@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
+use App\Models\Review;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -152,6 +153,25 @@ class BookController extends Controller
             'popular_books' => $popular_books->toArray(),
             'totals'        => count($popular_books),
             'code'          => RESPONSE_CODES['request_success'],
+        ], 200);
+    }
+
+    public function getReviews($book_id, Request $request)
+    {
+        $reviews = Review::where('book_id', $book_id);
+
+        if ($request->query('sortByKey') == 'oldest') {
+            $reviews->orderBy('review_date', 'asc');
+        } else {
+            $reviews->orderByDesc('review_date');
+        }
+
+        $per_page = $request->query('perPage');
+        $result   = empty($per_page) ? $reviews->paginate(10) : $reviews->paginate((int) $per_page);
+
+        return response([
+            'reviews' => $result,
+            'code'    => RESPONSE_CODES['request_success'],
         ], 200);
     }
 }
