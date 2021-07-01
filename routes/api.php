@@ -26,7 +26,7 @@ Route::get('/popular-books', [BookController::class, 'getPopularBooks']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/authors', [AuthorController::class, 'index']);
 Route::get('/reviews/{book_id}', [BookController::class, 'getReviews']);
-
+Route::post('/create-reviews/{book_id}', [BookController::class, 'storeReview']);
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
