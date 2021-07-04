@@ -22,25 +22,23 @@ class BookController extends Controller
     {
         $query = Book::leftJoin('reviews as rv', 'books.id', '=', 'rv.book_id')
             ->leftJoin('authors as au', 'books.author_id', 'au.id')
-            ->join('discounts as d', 'd.book_id', '=', 'books.id');
+            ->leftJoin('discounts as d', 'd.book_id', '=', 'books.id');
 
         $books = $query->select(
             'books.id',
+            'au.author_name',
             'books.category_id',
             'books.book_title',
             'books.slug',
             'books.book_cover_photo',
             'books.book_price as book_price',
-            'd.discount_end_date',
-            'd.discount_price as discount_price',
             DB::raw('count(rv.book_id) as count_reviews'),
             DB::raw('book_price - discount_price as sub_price'),
             DB::raw('avg(rv.rating_star) as avg_rating_star')
         )->groupBy(
+            'au.author_name',
             'books.id',
             'sub_price',
-            'discount_end_date',
-            'discount_price',
         );
 
         $sort = $request->query('sortByKey');
@@ -52,7 +50,7 @@ class BookController extends Controller
              * If a book has an available discount price, display it as a final price and put the book price
              * in front of it like the mock-up. Otherwise, only display the book price.
              */
-            $books->whereDate('d.discount_end_date', '>', date('Y-m-d'))->orderBy('sub_price', 'asc');
+            $books->whereDate('d.discount_end_date', '>', now())->orderBy('sub_price', 'asc');
         } else {
             switch ($sort) {
                 case 'highPrice':
@@ -68,6 +66,10 @@ class BookController extends Controller
             }
         }
 
+        $books->with(['discount' => function ($q) {
+            $q->where('discount_end_date', '>', now());
+        }]);
+
         $filter_category = $request->query('fCategory');
         if (!empty($filter_category) && $filter_category != 'all') {
             $books->where('category_id', $filter_category);
@@ -80,7 +82,6 @@ class BookController extends Controller
 
         $filter_rating = $request->query('fRating');
         if (!empty($filter_rating) && $filter_rating != 'all') {
-            // https://laravel.com/docs/8.x/queries#raw-methods
             $books->havingRaw('avg(rv.rating_star) > ?', [$filter_rating]);
         }
 
@@ -134,9 +135,11 @@ class BookController extends Controller
             ->take(8)
             ->get();
 
+        $data = count($recommended_books) ? BookResource::collection($recommended_books) : array();
+
         return response([
-            'recommended_books' => $recommended_books->toArray(),
-            'totals'            => count($recommended_books),
+            'recommended_books' => $data,
+            'totals'            => count($data),
             'code'              => RESPONSE_CODES['request_success'],
         ], 200);
     }
@@ -150,9 +153,11 @@ class BookController extends Controller
             ->take(8)
             ->get();
 
+        $data = count($popular_books) ? BookResource::collection($popular_books) : array();
+
         return response([
-            'popular_books' => $popular_books->toArray(),
-            'totals'        => count($popular_books),
+            'popular_books' => $data,
+            'totals'        => count($data),
             'code'          => RESPONSE_CODES['request_success'],
         ], 200);
     }

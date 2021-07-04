@@ -15,6 +15,7 @@ class BookResource extends JsonResource
      */
     public function toArray($request)
     {
+        $available_discount = $this->discount && $this->discount->discount_end_date > now();
         return [
             'id'               => $this->id,
             'category_id'      => $this->category_id,
@@ -24,9 +25,10 @@ class BookResource extends JsonResource
             'book_summary'     => $this->book_summary,
             'book_price'       => $this->book_price,
             'book_cover_photo' => $this->book_cover_photo,
-            'discount'         => new DiscountResource($this->discount),
             'category_name'    => $this->category->category_name,
             'author_name'      => $this->author->author_name,
+            'sub_price'        => $available_discount ? ($this->book_price - $this->discount->discount_price) : null,
+            'discount'         => $available_discount ? new DiscountResource($this->discount) : null,
         ];
     }
 }
