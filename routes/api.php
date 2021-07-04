@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\BookController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\CategoryController;
 use Illuminate\Http\Request;
 
@@ -27,6 +28,8 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/authors', [AuthorController::class, 'index']);
 Route::get('/reviews/{book_id}', [BookController::class, 'getReviews']);
 Route::post('/create-reviews/{book_id}', [BookController::class, 'storeReview']);
+Route::post('/create-order', [OrderController::class, 'store']);
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
