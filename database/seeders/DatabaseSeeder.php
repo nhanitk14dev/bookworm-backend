@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             ReviewSeeder::class,
             ReviewSeederV2::class,
             DiscountsSeeder::class,
+            UpdateValuesColunmsExtraBooks::class,
         ]);
     }
 }

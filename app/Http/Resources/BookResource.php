@@ -27,8 +27,10 @@ class BookResource extends JsonResource
             'book_cover_photo' => $this->book_cover_photo,
             'category_name'    => $this->category->category_name,
             'author_name'      => $this->author->author_name,
-            'sub_price'        => $available_discount ? ($this->book_price - $this->discount->discount_price) : null,
-            'discount'         => $available_discount ? new DiscountResource($this->discount) : null,
+            'sub_price'        => $this->sub_price,
+            'count_reviews'    => $this->count_reviews,
+            'avg_rating_star'  => $this->avg_rating_star,
+            'discount'         => new DiscountResource($this->discount),
         ];
     }
 }
