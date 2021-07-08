@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Book;
+use App\Observers\ReviewObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,6 +20,11 @@ class Review extends Model
         'review_date',
         'rating_star',
     ];
+    
+    protected static function booted()
+    {
+        Review::observe(ReviewObserver::class);
+    }
 
     public function book()
     {

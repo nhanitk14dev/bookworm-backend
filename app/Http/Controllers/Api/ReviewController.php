@@ -76,4 +76,16 @@ class ReviewController extends Controller
 
         return response($result, 200);
     }
+
+    public function destroy($id)
+    {
+        $review = Review::find($id);
+        if ($review) {
+            $review->delete();
+        }
+
+        return response([
+            'code' => RESPONSE_CODES['request_success'],
+        ], 200);
+    }
 }

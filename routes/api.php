@@ -39,6 +39,7 @@ Route::prefix('v1')->group(function () {
     Route::resource('authors', AuthorController::class)->only([
         'index',
     ]);
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
