@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
@@ -132,5 +133,18 @@ class BookController extends Controller
             'totals'        => count($popular_books),
             'code'          => RESPONSE_CODES['request_success'],
         ], 200);
+    }
+
+    public function destroy($id)
+    {
+        $book = Book::find($id);
+        if ($book) {
+            DB::transaction(function () use ($book) {
+                $book->delete();
+            });
+        }
+        return response(
+            array('code' => RESPONSE_CODES['request_success']),
+            200);
     }
 }

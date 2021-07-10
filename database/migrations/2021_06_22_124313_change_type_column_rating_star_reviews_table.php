@@ -36,7 +36,7 @@ class ChangeTypeColumnRatingStarReviewsTable extends Migration
             });
 
             Schema::table('reviews', function (Blueprint $table) {
-                $table->enum('rating_star', [1, 2, 3, 4, 5]);
+                $table->enum('rating_star', [1, 2, 3, 4, 5])->default(0);
             });
         }
     }

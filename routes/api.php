@@ -25,12 +25,12 @@ Route::prefix('v1')->group(function () {
     Route::get('/books/recommendation', [BookController::class, 'getRecommendedBooks']);
 
     Route::resource('books', BookController::class)->only([
-        'index', 'show',
+        'index', 'show', 'destroy',
     ]);
     Route::resource('categories', CategoryController::class)->only([
         'index',
     ]);
-    Route::resource('orders/{book_id}', OrderController::class)->only([
+    Route::resource('orders', OrderController::class)->only([
         'store',
     ]);
     Route::resource('reviews/{book_id}', ReviewController::class)->only([
