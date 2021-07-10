@@ -1,8 +1,7 @@
 # Overview Bookworm Backend
 Bookworm site using the Laravel v8.0 framework to build a backend system that provides API endpoints.
 
-
-##Install Laravel
+## Installation
 -----
 - Documentation: https://laravel.com/docs/8.x/installation#getting-started-on-linux
 - cd folder: curl -s https://laravel.build/bookmark | bash
@@ -15,7 +14,7 @@ Bookworm site using the Laravel v8.0 framework to build a backend system that pr
 	- DB_PASSWORD=bookworm.
 - Run: php artisan migrate:fresh --seed
 
-##Build Docker
+## Build Docker
 -----
 	URL: https://docs.docker.com/engine/installation/linux/ubuntulinux
 	Install: https://docs.docker.com/engine/install/ubuntu
