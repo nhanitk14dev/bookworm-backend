@@ -17,7 +17,7 @@ class CreateBooksTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('category_id');
             $table->bigInteger('author_id');
-            $table->tinyText('book_title')->index();
+            $table->string('book_title')->index();
             $table->string('slug')->index();
             $table->text('book_summary')->nullable();
             $table->unsignedDecimal('book_price', $precision = 5, $scale = 2)->default(0.00);

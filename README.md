@@ -6,14 +6,27 @@ Bookworm site using the Laravel v8.0 framework to build a backend system that pr
 - Documentation: https://laravel.com/docs/8.x/installation#getting-started-on-linux
 - cd folder: curl -s https://laravel.build/bookmark | bash
 - Config env with docker:
- 	- DB_CONNECTION=pgsql
-	- DB_HOST=db
-	- DB_PORT=5432
-	- DB_DATABASE=bookworm
-	- DB_USERNAME=bookworm
-	- DB_PASSWORD=bookworm.
+     - DB_CONNECTION=pgsql
+    - DB_HOST=db
+    - DB_PORT=5432
+    - DB_DATABASE=bookworm
+    - DB_USERNAME=bookworm
+    - DB_PASSWORD=bookworm.
 - Run: php artisan migrate:fresh --seed
 
+- Config Mysql in .env:
+  + DB_CONNECTION=mysql
+  + DB_HOST=127.0.0.1
+  + DB_PORT=3306
+  + DB_DATABASE=bookworm
+  + DB_USERNAME=root
+  + DB_PASSWORD=
+
+- Run command line: 
+  + Run installed packages: composer install
+  + Generate new key: php artisan key:generate
+  + Run migrations: php artisan make:migrate
+  + Run DB seeds: php artisan db:seed
 ## Build Docker
 -----
 	URL: https://docs.docker.com/engine/installation/linux/ubuntulinux
